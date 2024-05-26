@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CEPs Salvos</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+
+        button {
+            margin-left: 20px;
+            margin-top: 20px;
+            padding: 10px;
+            font-size: 16px;
+            background-color: #007BFF;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 12px 8px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #f2f2f2;
+            color: #333;
+        }
+
+        td {
+            color: #666;
+        }
+
+        tr:hover {
+            background-color: #f9f9f9;
+        }
+
+        /* Estilos para tornar a tabela responsiva */
+        .table-responsive {
+            overflow-x: auto;
+        }
+
+        @media (max-width: 768px) {
+            table {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>CEPs Salvos</h1>
+        <div class="table-responsive">
+            <table>
+                <thead>
+                    <tr>
+                        <th>CEP</th>
+                        <th>Logradouro</th>
+                        <th>Bairro</th>
+                        <th>Localidade</th>
+                        <th>UF</th>
+                        <th>Ação</th> <!-- Nova coluna para ação -->
+                    </tr>
+                </thead>
+                <tbody>
+                    <% ceps.forEach(cep => { %>
+                        <tr>
+                            <td><%= cep.cep %></td>
+                            <td><%= cep.logradouro %></td>
+                            <td><%= cep.bairro %></td>
+                            <td><%= cep.localidade %></td>
+                            <td><%= cep.uf %></td>
+                            <td>
+                                <!-- Botão para excluir o CEP -->
+                                <button onclick="excluirCep('<%= cep.cep %>')">Excluir</button>
+                            </td>
+                        </tr>
+                    <% }); %>
+                </tbody>
+            </table>
+            <a href="/"><button>Retorna</button></a>
+        </div>
+    </div>
+    <!-- Script para enviar o pedido de exclusão -->
+    <script>
+        function excluirCep(cep) {
+            if (confirm(`Tem certeza que deseja excluir o CEP ${cep}?`)) {
+                fetch(`/ceps/${cep}`, {
+                    method: 'DELETE'
+                })
+                .then(response => {
+                    if (response.ok) {
+                        // Recarregar a página para atualizar a lista de CEPs após a exclusão
+                        location.reload();
+                    } else {
+                        alert('Erro ao excluir o CEP');
+                    }
+                })
+                .catch(error => {
+                    console.error('Erro ao excluir o CEP:', error);
+                    alert('Erro ao excluir o CEP');
+                });
+            }
+        }
+    </script>
+</body>
+</html>
